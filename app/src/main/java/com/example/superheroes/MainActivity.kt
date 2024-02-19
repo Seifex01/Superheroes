@@ -22,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.superheroes.model.Hero
-import com.example.superheroes.model.heroes
+import com.example.superheroes.model.HeroRepository.heroes
 import com.example.superheroes.ui.theme.SuperheroesTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,23 +48,45 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SuperHeroApp(heroes = heroes)
+                    SuperHeroApp()
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SuperHeroApp(heroes: List<Hero>, modifier: Modifier = Modifier) {
+fun SuperHeroApp(modifier: Modifier = Modifier) {
+    /*
     Column(modifier.fillMaxSize()) {
+
         HeroTopAppBar()
         HeroList(heroes = heroes)
     }
-}
+    */
+    Scaffold(
+        topBar = {
+            HeroTopAppBar()
+        }
+
+    ) { it ->
+
+
+                LazyColumn(contentPadding = it) {
+                    items(heroes) {
+                        HeroCard(hero = it)
+                    }
+                }
+
+        }
+    }
+
 
 @Composable
-fun HeroCard(hero: Hero, modifier: Modifier = Modifier) {
+fun HeroCard(
+    hero: Hero,
+    modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .clip(MaterialTheme.shapes.medium)
@@ -115,17 +138,7 @@ fun HeroCard(hero: Hero, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun HeroList(heroes: List<Hero>) {
-    LazyColumn (
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ){
-        items(heroes) { hero ->
-            HeroCard(hero = hero)
-        }
-    }
-}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,9 +153,6 @@ fun HeroTopAppBar(modifier: Modifier = Modifier){
             }
         },
         modifier = modifier
-
-
-
     )
 }
 
@@ -151,7 +161,7 @@ fun HeroTopAppBar(modifier: Modifier = Modifier){
 fun SuperHeroAppPreview() {
     Row {
         SuperheroesTheme(darkTheme = false) {
-            SuperHeroApp(heroes = heroes)
+            SuperHeroApp()
         }
     }
 }
@@ -160,7 +170,7 @@ fun SuperHeroAppPreview() {
 @Composable
 fun SuperHeroAppDarkThemePreview() {
     SuperheroesTheme(darkTheme = true) {
-        SuperHeroApp(heroes = heroes)
+        SuperHeroApp()
     }
 }
 
